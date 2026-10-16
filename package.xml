@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>sntv_gazebo</name>
+  <version>1.0.0</version>
+  <description>Gazebo Sim system that renders a mono or stereo camera rig (perspective or fisheye),
+    encodes it with NVENC without leaving the GPU and serves it over the SNTV protocol.</description>
+  <maintainer email="alejandro.bermudez.fajardo@gmail.com">Alejandro Bermúdez Fajardo</maintainer>
+  <license>Apache-2.0</license>
+  <url type="repository">https://github.com/alexoberco/sntv_gazebo</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>gz_sim_vendor</depend>
+  <depend>gz_plugin_vendor</depend>
+  <depend>gz_rendering_vendor</depend>
+  <depend>gz_ogre_next_vendor</depend>
+  <build_depend>libffmpeg-nvenc-dev</build_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!--
+  One 90-degree perspective camera, 1280 px, H.264 at 60 fps: a plain video feed.
+
+    GZ_SIM_SYSTEM_PLUGIN_PATH=<install>/lib gz sim -s -r --headless-rendering mono_perspective.sdf
+    python3 sntv/tools/sntv_receive.py --port 8766 --save frame.png
+
+  Copyright 2026 Alejandro Bermúdez Fajardo (alexoberco)
+  SPDX-License-Identifier: Apache-2.0
+-->
+<sdf version="1.9">
+  <world name="mono_perspective">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <!-- The plugin hooks into the render thread that the Sensors system drives. -->
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.9 0.9 0.9 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.5 0.2 -0.9</direction>
+    </light>
+    <model name="ground">
+      <static>true</static>
+      <link name="link">
+        <visual name="v">
+          <geometry><plane><normal>0 0 1</normal><size>40 40</size></plane></geometry>
+          <material><ambient>0.35 0.35 0.38 1</ambient><diffuse>0.45 0.45 0.48 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="red_box">
+      <static>true</static>
+      <pose>3 0 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><box><size>1 1 1</size></box></geometry>
+          <material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="green_sphere">
+      <static>true</static>
+      <pose>3 2 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><sphere><radius>0.5</radius></sphere></geometry>
+          <material><ambient>0.1 0.7 0.2 1</ambient><diffuse>0.1 0.7 0.2 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="blue_cylinder">
+      <static>true</static>
+      <pose>3 -2 0.75 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><cylinder><radius>0.4</radius><length>1.5</length></cylinder></geometry>
+          <material><ambient>0.1 0.3 0.9 1</ambient><diffuse>0.1 0.3 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="yellow_left">
+      <static>true</static>
+      <pose>0 3 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><box><size>0.6 0.6 1</size></box></geometry>
+          <material><ambient>0.9 0.8 0.1 1</ambient><diffuse>0.9 0.8 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="white_right">
+      <static>true</static>
+      <pose>0 -3 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><box><size>0.6 0.6 1</size></box></geometry>
+          <material><ambient>0.95 0.95 0.95 1</ambient><diffuse>0.95 0.95 0.95 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="purple_high">
+      <static>true</static>
+      <pose>2 0 2.6 0 0 0</pose>
+      <link name="link">
+        <visual name="v">
+          <geometry><sphere><radius>0.3</radius></sphere></geometry>
+          <material><ambient>0.6 0.1 0.7 1</ambient><diffuse>0.6 0.1 0.7 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- The rig: any model works. The clock sensor sets where the cameras are (its pose is the
+         rig centre, its +X the optical axis) and how often they render (update_rate). -->
+    <model name="rig">
+      <static>true</static>
+      <pose>0 0 1.4 0 0.05 0</pose>
+      <link name="head">
+        <sensor name="sntv_clock" type="camera">
+          <always_on>true</always_on>
+          <update_rate>60</update_rate>
+          <topic>/sntv/clock</topic>
+          <camera>
+            <horizontal_fov>0.5</horizontal_fov>
+            <image><width>16</width><height>16</height><format>R8G8B8</format></image>
+            <clip><near>0.1</near><far>10</far></clip>
+          </camera>
+        </sensor>
+      </link>
+      <plugin filename="sntv_gazebo_system" name="sntv::StreamSystem">
+        <port>8766</port>
+        <layout>mono</layout>
+        <view_size>1280</view_size>
+        <projection>perspective</projection>
+        <fov_deg>90</fov_deg>
+        <fps>60</fps>
+        <codec>h264</codec>
+        <bitrate>20000000</bitrate>
+      </plugin>
+    </model>
+  </world>
+</sdf>

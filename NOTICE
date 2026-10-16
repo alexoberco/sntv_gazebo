@@ -1,0 +1,11 @@
+sntv_gazebo — SNTV video source for Gazebo Sim
+Copyright 2026 Alejandro Bermúdez Fajardo (alexoberco)
+https://github.com/alexoberco/sntv_gazebo
+
+This product includes software developed by Alejandro Bermúdez Fajardo as part
+of the Sentinel project (VR teleoperation of a humanoid robot).
+
+Under section 4(d) of the Apache License 2.0, any redistribution of this work or
+of works derived from it must carry a readable copy of this NOTICE, for example
+in the documentation, the "about" or credits screen, or a NOTICE file shipped
+with the product.
